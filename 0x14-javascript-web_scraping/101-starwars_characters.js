@@ -3,7 +3,7 @@ const request = require('request');
 
 // Function to fetch characters of a specific movie
 function fetchCharacters(movieId) {
-    const url = `https://swapi.dev/api/films/${movieId}/`;
+    const url = `https://swapi-api.alx-tools.com/api/films/${movieId}/`;
     
     request(url, (error, response, body) => {
         if (error) {
