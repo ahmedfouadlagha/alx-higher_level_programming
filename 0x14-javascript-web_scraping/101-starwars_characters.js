@@ -1,36 +1,30 @@
 #!/usr/bin/node
 const request = require('request');
+const url = 'https://swapi-api.alx-tools.com/api/films/';
+let id = parseInt(process.argv[2], 10);
+let characters = [];
 
-// Function to fetch characters of a specific movie
-function fetchCharacters(movieId) {
-    const url = `https://swapi-api.alx-tools.com/api/films/${movieId}/`;
-    
-    request(url, (error, response, body) => {
-        if (error) {
-            console.error('Error:', error);
-        } else {
-            const film = JSON.parse(body);
-            const charactersUrls = film.characters;
-            
-            // Fetching characters
-            charactersUrls.forEach(characterUrl => {
-                request(characterUrl, (error, response, body) => {
-                    if (error) {
-                        console.error('Error:', error);
-                    } else {
-                        const character = JSON.parse(body);
-                        console.log(character.name);
-                    }
-                });
-            });
+request(url, function (err, response, body) {
+  if (err == null) {
+    const resp = JSON.parse(body);
+    const results = resp.results;
+    if (id < 4) {
+      id += 3;
+    } else {
+      id -= 3;
+    }
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].episode_id === id) {
+        characters = results[i].characters;
+        break;
+      }
+    }
+    for (let j = 0; j < characters.length; j++) {
+      request(characters[j], function (err, response, body) {
+        if (err == null) {
+          console.log(JSON.parse(body).name);
         }
-    });
-}
-
-// Retrieve movie ID from command line argument
-const movieId = process.argv[2];
-if (!movieId) {
-    console.error('Please provide a movie ID.');
-} else {
-    fetchCharacters(movieId);
-}
+      });
+    }
+  }
+});
